@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brightline Seller Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout idea: a game-style onboarding sprint. Top bar with XP and badges, a five-station path, a main stage and an AI coach rail beside it. Single bright theme. */
+  --ink:#14213D;
+  --paper:#EEF2FA;
+  --card:#FFFFFF;
+  --blue:#2457F5;
+  --sun:#FFB020;
+  --mint:#0E9F75;
+  --coral:#D93F47;
+  --line:#D8E0EE;
+  --muted:#56637E;
+  --blue-soft:#E4EBFF;
+  --sun-soft:#FFF3D6;
+  --mint-soft:#DDF5EC;
+  --coral-soft:#FDE4E5;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:800}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:8px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* top bar */
+.top{background:var(--ink);color:#fff}
+.top .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.15rem}
+.brand small{display:block;font-family:var(--body);font-weight:600;font-size:.75rem;opacity:.75;letter-spacing:.02em}
+.top .spacer{flex:1}
+.xp{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:999px;font-weight:800;font-variant-numeric:tabular-nums}
+.xp .bolt{color:var(--sun)}
+.shelf{display:flex;gap:6px}
+.badge-dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.3)}
+.badge-dot.on{background:var(--sun);border:2px solid var(--sun);color:var(--ink)}
+.badge-dot svg{width:16px;height:16px}
+.ghost{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff;border-radius:999px;padding:6px 14px;font-weight:700}
+.ghost:hover{background:rgba(255,255,255,.12)}
+
+/* path */
+.path{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0 14px}
+.step{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;text-align:left;display:flex;gap:10px;align-items:center;min-width:0}
+.step .num{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--paper);font-weight:800;font-size:.85rem}
+.step .lbl{font-size:.82rem;font-weight:700;line-height:1.2}
+.step .lbl span{display:block;font-weight:600;color:var(--muted);font-size:.72rem}
+.step.cur{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.step.cur .num{background:var(--blue);color:#fff}
+.step.done .num{background:var(--mint);color:#fff}
+.bar{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--mint));width:0;transition:width .4s}
+
+/* main grid */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;padding-bottom:40px}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;min-width:0}
+.coach{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;align-self:start;position:sticky;top:12px}
+.coach-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.nova{width:46px;height:46px;border-radius:14px;background:var(--blue);display:grid;place-items:center;flex:none}
+.coach-head b{font-family:var(--display);font-size:1.05rem;display:block}
+.coach-head span{font-size:.78rem;color:var(--muted)}
+.coach-msg{background:var(--blue-soft);border-radius:4px 14px 14px 14px;padding:12px 14px;font-size:.93rem}
+.coach-meta{margin-top:12px;display:grid;gap:6px;font-size:.82rem;color:var(--muted)}
+.coach-meta div{display:flex;justify-content:space-between;gap:8px}
+.coach-meta b{color:var(--ink)}
+.kicker{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.lede{color:var(--muted);max-width:65ch;margin-top:8px}
+.sec{margin-top:24px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-weight:800}
+.btn:hover{filter:brightness(1.08)}
+.btn.alt{background:var(--paper);color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:800}
+.pill.good{background:var(--mint-soft);color:var(--mint)}
+.pill.warn{background:var(--sun-soft);color:#8A5A00}
+.pill.bad{background:var(--coral-soft);color:var(--coral)}
+.pill.info{background:var(--blue-soft);color:var(--blue)}
+
+/* welcome */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;align-items:center}
+.client-card{background:var(--sun-soft);border-radius:16px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+.avatar{width:56px;height:56px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.2rem;color:#fff;background:#B5651D}
+.client-card p{font-size:.9rem}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.choice{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:12px;text-align:left}
+.choice b{display:block;font-size:.95rem}
+.choice span{font-size:.8rem;color:var(--muted)}
+.choice[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft)}
+label.field{display:grid;gap:6px;font-weight:700;font-size:.9rem}
+input[type=text],select,textarea{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;width:100%}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.plan{display:grid;gap:8px;margin-top:10px}
+.plan div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:6px 0;font-size:.92rem}
+.plan em{font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* flip cards */
+.flips{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.flip{perspective:900px;background:none;border:0;padding:0;height:250px;text-align:left}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip[aria-pressed="true"] .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:16px;padding:16px;backface-visibility:hidden;display:flex;flex-direction:column;gap:8px;border:1.5px solid var(--line)}
+.front{background:var(--card);justify-content:space-between}
+.front .ico{width:48px;height:48px;border-radius:12px;display:grid;place-items:center}
+.front small{color:var(--muted);font-weight:700;font-size:.78rem}
+.back{background:var(--ink);color:#fff;transform:rotateY(180deg);font-size:.82rem;overflow:auto}
+.back b{color:var(--sun);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em}
+.back q{font-style:italic;quotes:none}
+
+/* match game */
+.match{display:grid;gap:10px;margin-top:12px}
+.goal{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:10px}
+.goal p{font-weight:600}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.86rem}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt.right{background:var(--mint);color:#fff;border-color:var(--mint)}
+.opt.wrong{background:var(--coral-soft);color:var(--coral);border-color:var(--coral)}
+.fb{font-size:.86rem;color:var(--muted)}
+.score-strip{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+
+/* navigator */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.qpick{display:grid;gap:8px;margin-top:10px}
+.qbtn{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;text-align:left;font-weight:600;font-size:.9rem}
+.qbtn[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft)}
+.qbtn.strong{border-color:var(--mint);background:var(--mint-soft)}
+.qbtn.weak{border-color:var(--coral);background:var(--coral-soft)}
+.qbtn small{display:block;font-weight:600;color:var(--muted);margin-top:4px}
+.aid{border:2px solid var(--ink);border-radius:16px;overflow:hidden}
+.aid-head{background:var(--ink);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.aid-head b{font-family:var(--display)}
+.phase{border-top:1px solid var(--line)}
+.phase summary{padding:10px 14px;font-weight:800;cursor:pointer;display:flex;justify-content:space-between;gap:8px;list-style:none}
+.phase summary::-webkit-details-marker{display:none}
+.phase summary em{font-style:normal;color:var(--muted);font-weight:700;font-size:.8rem;font-variant-numeric:tabular-nums}
+.phase ul{list-style:none;margin:0;padding:0 14px 12px;display:grid;gap:6px}
+.phase label{display:flex;gap:8px;align-items:flex-start;font-size:.88rem}
+.phase input{margin-top:4px;accent-color:var(--mint)}
+
+/* role play */
+.rp{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:16px;margin-top:14px}
+.call{border:1.5px solid var(--line);border-radius:16px;display:flex;flex-direction:column;height:500px;overflow:hidden}
+.call-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--paper);border-bottom:1px solid var(--line)}
+.call-head .avatar{width:38px;height:38px;font-size:.95rem}
+.call-head b{display:block;font-size:.92rem}
+.call-head span{font-size:.76rem;color:var(--muted)}
+.live{margin-left:auto;font-size:.78rem;font-weight:800;color:var(--coral);display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--coral)}
+.log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:82%;padding:10px 12px;border-radius:14px;font-size:.92rem}
+.msg.them{background:var(--paper);border-top-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--blue);color:#fff;border-top-right-radius:4px;align-self:flex-end}
+.msg.sys{align-self:center;background:var(--sun-soft);font-size:.8rem;font-weight:700;max-width:100%}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px 0}
+.chip{border:1.5px dashed var(--blue);background:var(--card);color:var(--blue);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:700;text-align:left}
+.compose{display:flex;gap:8px;padding:10px 14px 14px}
+.compose input{flex:1}
+.meters{display:grid;gap:12px;align-content:start}
+.meter b{display:flex;justify-content:space-between;font-size:.84rem}
+.meter b em{font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums}
+.track{height:10px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:4px}
+.track i{display:block;height:100%;background:var(--blue);width:0;transition:width .35s}
+.checks{display:grid;gap:4px;font-size:.8rem;margin-top:4px}
+.checks span{color:var(--muted)}
+.checks span.ok{color:var(--mint);font-weight:800}
+.debrief{margin-top:16px;border-radius:16px;background:var(--blue-soft);padding:18px;display:grid;gap:10px}
+.debrief ul{margin:0;padding-left:20px}
+
+/* scenarios */
+.scene{border:1.5px solid var(--line);border-radius:16px;padding:18px;margin-top:14px;display:grid;gap:12px}
+.say{display:flex;gap:12px;align-items:flex-start}
+.say .bubble{background:var(--sun-soft);border-radius:4px 14px 14px 14px;padding:12px 14px;font-weight:600}
+.answers{display:grid;gap:8px}
+.ans{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;text-align:left;font-weight:600}
+.ans:hover:not(:disabled){border-color:var(--blue)}
+.ans.best{border-color:var(--mint);background:var(--mint-soft)}
+.ans.meh{border-color:var(--sun);background:var(--sun-soft)}
+.ans.no{border-color:var(--coral);background:var(--coral-soft)}
+.conseq{border-left:4px solid var(--blue);padding:8px 12px;background:var(--paper);border-radius:0 10px 10px 0;font-size:.92rem}
+.dots{display:flex;gap:6px}
+.dots i{width:28px;height:6px;border-radius:999px;background:var(--line)}
+.dots i.on{background:var(--blue)}
+
+/* results */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.tile{border:1.5px solid var(--line);border-radius:14px;padding:14px}
+.tile b{font-family:var(--display);font-size:1.7rem;display:block;font-variant-numeric:tabular-nums}
+.tile span{font-size:.8rem;color:var(--muted);font-weight:700}
+.skills{display:grid;gap:12px;margin-top:10px}
+.skill b{display:flex;justify-content:space-between;font-size:.9rem}
+.skill b em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--muted)}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.bcard{border:1.5px dashed var(--line);border-radius:14px;padding:12px;text-align:center;font-size:.82rem;color:var(--muted)}
+.bcard .medal{width:46px;height:46px;border-radius:50%;margin:0 auto 6px;display:grid;place-items:center;background:var(--paper)}
+.bcard.on{border:1.5px solid var(--sun);background:var(--sun-soft);color:var(--ink)}
+.bcard.on .medal{background:var(--sun)}
+.bcard b{display:block;color:var(--ink)}
+.planlist{display:grid;gap:8px;margin-top:10px;padding:0;list-style:none}
+.planlist li{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;gap:10px}
+.planlist li b{display:block}
+.planlist .tag{flex:none;align-self:flex-start;white-space:nowrap}
+
+/* behind the design */
+.overlay{position:fixed;inset:0;background:rgba(20,33,61,.55);display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;z-index:20}
+.overlay.open{display:flex}
+.sheet{background:var(--card);border-radius:18px;max-width:880px;width:100%;padding:26px;display:grid;gap:18px}
+.sheet-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.sheet table{width:100%;border-collapse:collapse;font-size:.88rem}
+.sheet th,.sheet td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.sheet th{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+.sheet ol,.sheet ul{margin:0;padding-left:20px;display:grid;gap:4px}
+pre.prompt{white-space:pre-wrap;background:var(--paper);border-radius:12px;padding:14px;font-size:.82rem;font-family:ui-monospace,Consolas,monospace;margin:0}
+.note{font-size:.8rem;color:var(--muted)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;transition:transform .3s,opacity .3s;z-index:30;display:flex;gap:8px;align-items:center;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:25}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* intro slide */
+.intro{display:grid;gap:22px}
+.intro-top{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fact{background:var(--paper);border-radius:14px;padding:12px}
+.fact b{font-family:var(--display);font-size:1.35rem;display:block;font-variant-numeric:tabular-nums}
+.fact span{font-size:.78rem;color:var(--muted);font-weight:700}
+.why-box{background:var(--ink);color:#fff;border-radius:16px;padding:18px;display:grid;gap:8px}
+.why-box h3{color:var(--sun)}
+.why-box p{font-size:.92rem;opacity:.92}
+.objs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.objs li{border:1.5px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:10px;font-size:.92rem}
+.objs li i{flex:none;width:26px;height:26px;border-radius:8px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.85rem}
+.method{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.method div{border-radius:12px;padding:12px;background:var(--sun-soft);font-size:.85rem}
+.method b{display:block;font-family:var(--display);font-size:1rem}
+.stations{display:grid;gap:6px}
+.stations div{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border-bottom:1px dashed var(--line);padding:8px 0;font-size:.92rem}
+.stations i{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.8rem}
+.stations em{font-style:normal;color:var(--muted);font-size:.82rem;font-variant-numeric:tabular-nums}
+/* what's new */
+.fresh{display:flex;gap:12px;align-items:flex-start;background:var(--mint-soft);border-radius:14px;padding:12px 14px;margin-top:14px;font-size:.9rem}
+/* pitch builder */
+.pslots{display:grid;gap:12px;margin-top:10px}
+.pslot{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:8px}
+.pslot h4{margin:0;font-size:.9rem;display:flex;gap:8px;align-items:center}
+.pslot h4 i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:.75rem}
+.pitch-out{background:var(--blue-soft);border-radius:14px;padding:14px;font-size:.95rem;min-height:56px}
+/* crm */
+.crm{margin-top:16px;border:2px solid var(--ink);border-radius:16px;overflow:hidden}
+.crm-body{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.crm-res{padding:0 14px 14px;font-size:.9rem}
+/* milestones + pulse */
+.miles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.mile{border-top:4px solid var(--line);padding-top:8px;font-size:.85rem}
+.mile b{display:block;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.mile.ok{border-color:var(--mint)}
+.mile.ok b{color:var(--mint)}
+.pulse{border:1.5px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px}
+.stars{display:flex;gap:6px}
+.star{width:42px;height:42px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-size:1.2rem;line-height:1}
+.star.on{background:var(--sun);border-color:var(--sun)}
+.tagchip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:700}
+.tagchip[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft);color:var(--blue)}
+@media (max-width:980px){
+  .main{grid-template-columns:1fr}
+  .coach{position:static;order:-1}
+  .path{grid-template-columns:repeat(3,1fr)}
+  .flips{grid-template-columns:repeat(2,1fr)}
+  .rp{grid-template-columns:1fr}
+  .tiles,.badges{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .hero,.two,.form-grid,.choices,.intro-top,.objs,.crm-body{grid-template-columns:1fr}
+  .method,.miles,.facts{grid-template-columns:repeat(2,1fr)}
+  .path{grid-template-columns:repeat(2,1fr)}
+  .stage{padding:18px}
+  .flips{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="#2457F5"/><path d="M9 23 L17 9 L25 23 Z" fill="#FFB020"/><circle cx="17" cy="19" r="3" fill="#14213D"/></svg>
+      <div>Brightline Seller Academy<small>New Seller Onboarding · Sprint 1: Your First Client Call</small></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="shelf" id="shelf" aria-label="Badges earned"></div>
+    <div class="xp" aria-live="polite"><span class="bolt">⚡</span><span id="xp">0</span> XP</div>
+    <button class="ghost" id="openIntro" type="button">Overview</button>
+    <button class="ghost" id="openDesign" type="button">Behind the design</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="path" id="path" aria-label="Onboarding path"></nav>
+  <div class="bar" aria-hidden="true"><i id="progress"></i></div>
+  <div class="main">
+    <main class="stage" id="stage" tabindex="-1"></main>
+    <aside class="coach" aria-live="polite">
+      <div class="coach-head">
+        <div class="nova" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="11" fill="#fff"/><circle cx="9" cy="12" r="2" fill="#2457F5"/><circle cx="17" cy="12" r="2" fill="#2457F5"/><path d="M8 17 Q13 21 18 17" stroke="#2457F5" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="13" cy="2.5" r="2" fill="#FFB020"/></svg></div>
+        <div><b>Nova, your AI coach</b><span>Adapts tips to your role and progress</span></div>
+      </div>
+      <div class="coach-msg" id="coachMsg"></div>
+      <div class="coach-meta" id="coachMeta"></div>
+    </aside>
+  </div>
+</div>
+
+<div class="overlay" id="design" role="dialog" aria-modal="true" aria-labelledby="designTitle">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><div class="kicker">Portfolio sample · Naya Roquemore</div><h2 id="designTitle">Behind the design</h2></div>
+      <button class="btn alt" id="closeDesign" type="button">Close</button>
+    </div>
+    <section>
+      <h3>The business problem</h3>
+      <p class="lede">New sellers on a global ads sales team need to run a confident first client call fast. Long product decks slow ramp and don't build the habits that win deals: discovery before pitching, tying products to the client's goal, and closing on a clear next step. This sprint replaces a day of slides with 20 minutes of practice.</p>
+    </section>
+    <section>
+      <h3>Learning objectives</h3>
+      <ol>
+        <li>Match a client's business goal to the right ad product (Search, Display, Video or Autopilot) in 4 of 5 cases.</li>
+        <li>Ask open discovery questions that uncover goal, audience, current marketing, budget and success measures before recommending a product.</li>
+        <li>Deliver a goal-based commercial pitch and secure a dated next step in a live practice call.</li>
+        <li>Choose the best response to common client objections in scenario-based decisions, scoring 80% or higher.</li>
+      </ol>
+    </section>
+    <section>
+      <h3>How each asset maps to the job</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Asset</th><th>Format</th><th>On-the-job behavior</th><th>How AI is used</th></tr></thead>
+        <tbody>
+          <tr><td>Product Primer</td><td>Self-paced microlearning: flip cards plus a goal-matching game</td><td>Recommends products by client goal, not by feature list</td><td>Path adapts to experience level; seasoned sellers can test out</td></tr>
+          <tr><td>Discovery Navigator</td><td>Workflow aid: interactive call checklist sellers can copy into their CRM notes</td><td>Follows the same call structure on every first call</td><td>Coach flags which phases are still open</td></tr>
+          <tr><td>Live Call with Maya</td><td>Interactive role-play with an AI client</td><td>Runs discovery, pitches to the goal, closes on a next step</td><td>AI client reacts to what the learner actually says; live rubric scoring and a personalized debrief</td></tr>
+          <tr><td>Deal Decisions</td><td>Scenario-based assessment with branching consequences</td><td>Handles budget, performance and competitor objections</td><td>Results feed the personalized learning plan</td></tr>
+          <tr><td>Pitch Builder</td><td>Guided practice with a second client</td><td>Delivers a 4-part commercial pitch: goal, product, expectation, dated ask</td><td>Coach explains why each line is strong or weak</td></tr>
+          <tr><td>CRM log</td><td>Client-facing workflow practice after the call</td><td>Logs goal, budget, product and next step within an hour of every call</td><td>Accuracy checked against what the AI client actually said</td></tr>
+          <tr><td>Results and Plan</td><td>Skill profile, badges and next steps</td><td>Manager sees readiness before the first real call</td><td>Plan is generated from the learner's weakest skill and role</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <section>
+      <h3>Measurement plan</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Level</th><th>What we measure</th><th>Target</th></tr></thead>
+        <tbody>
+          <tr><td>Reaction</td><td>Post-sprint rating and "what slowed you down?" comment, reviewed weekly for friction points</td><td>4.5/5 or higher</td></tr>
+          <tr><td>Learning</td><td>Goal Match score, role-play rubric, Deal Decisions score</td><td>80%+ pass rate on first or second attempt</td></tr>
+          <tr><td>Behavior</td><td>Manager call review of the first three real discovery calls, using the same rubric</td><td>Discovery covered before pitch in 3 of 3 calls</td></tr>
+          <tr><td>Results (ramp metrics)</td><td>Days to first client pitch, days to first closed deal, first-90-day pipeline</td><td>Compared against the prior new-hire cohort</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <section>
+      <h3>Asset lifecycle and version control</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Version</th><th>Date</th><th>Change</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr><td>v1.1</td><td>Nov 2026</td><td>Added module overview, Pitch Builder, CRM log, "What's new" product update, ramp milestones and learner feedback pulse</td><td>N. Roquemore</td></tr>
+          <tr><td>v1.0</td><td>Nov 2026</td><td>Initial build: primer, navigator, AI role-play, assessment, results</td><td>N. Roquemore</td></tr>
+          <tr><td>Next review</td><td>Each product release, or quarterly</td><td>SME validation of product cards and Maya's responses; retire outdated content</td><td>Learning Specialist + Sales SME</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <section>
+      <h3>Production AI role-play prompt</h3>
+      <p class="note">This prototype runs a scripted intent engine so it works anywhere with no login. In production, the same rubric would drive a large language model with this system prompt.</p>
+      <pre class="prompt">You are Maya Ortiz, owner of Mesa Verde Coffee Roasters, a small-batch roaster with one café and an online store. You are talking to a new ads seller on their first call.
+Facts to reveal only when the seller asks: goal = 60 online orders a month (now about 20); best customers = home brewers aged 28 to 45 who find you at the farmers market; current marketing = occasional social posts, no ads; budget = about 1,500 a month in local currency; success = more orders in your store dashboard.
+Behavior: be friendly but busy. If the seller pitches a product before asking at least three discovery questions, push back. Favor recommendations tied to online orders. Agree to a next step only if it has a specific date.
+After the call, step out of character as "Nova" and score the seller 0-100 on Discovery (40), Listening (15), Product fit (25) and Next step (20). Give two strengths and one thing to try next time, in plain language.</pre>
+    </section>
+    <section>
+      <h3>Four beliefs about learning, built in</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Learning is…</th><th>How this sprint does it</th></tr></thead>
+        <tbody>
+          <tr><td>Personal</td><td>Path, hints, currency and learning plan adapt to role, experience, market and scores</td></tr>
+          <tr><td>Social</td><td>Peer role-play swap, shadowing senior sellers, sharing questions with the cohort, a manager summary</td></tr>
+          <tr><td>A process</td><td>Sprint 1 of a ramp with Day 3, Day 7 and Day 30 milestones, not a one-time event</td></tr>
+          <tr><td>Real life</td><td>A realistic client, real objections, a live call and the same CRM step sellers do after every call</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <section>
+      <h3>Design choices</h3>
+      <ul>
+        <li>Built with Action Mapping: every screen practices a behavior from a real first call.</li>
+        <li>One selling method throughout (Learn, Match, Pitch, Commit) so product knowledge, pitch and close are practiced as one workflow.</li>
+        <li>Global audience: market selection localizes currency; plain language and no idioms that don't translate.</li>
+        <li>Accessible: full keyboard support, visible focus, screen-reader live regions, reduced-motion support.</li>
+        <li>Brightline Ads is a fictional company created for this portfolio sample.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const STATIONS = [
+  {t:'Build your path', s:'2 min'},
+  {t:'Product Primer', s:'Self-paced'},
+  {t:'Discovery & Pitch', s:'Workflow aid'},
+  {t:'Live Call with Maya', s:'AI role-play'},
+  {t:'Deal Decisions', s:'Assessment'},
+  {t:'Results & Plan', s:'Your ramp'}
+];
+const ROLES = {
+  smb:{name:'Small Business Seller', short:'small business seller'},
+  am:{name:'Account Manager', short:'account manager'},
+  cs:{name:'Customer Success', short:'customer success rep'}
+};
+const LEVELS = {
+  newads:{name:'New to ads', d:'Full path with hints on'},
+  newsales:{name:'New to sales', d:'Extra pitch and close practice'},
+  seasoned:{name:'Seasoned seller', d:'Fast track: test out of the primer'}
+};
+const MARKETS = {na:{n:'North America',c:'$'}, emea:{n:'Europe, Middle East & Africa',c:'€'}, apac:{n:'Asia Pacific',c:'S$'}, latam:{n:'Latin America',c:'R$'}};
+const BADGES = [
+  {id:'product', n:'Product Pro', how:'Score 4/5 or better in Goal Match', icon:'<path d="M8 2l1.8 3.8L14 6.3l-3 2.9.7 4.1L8 11.4l-3.7 1.9.7-4.1-3-2.9 4.2-.5z" fill="currentColor"/>'},
+  {id:'questions', n:'Question Master', how:'Pick all three strong discovery questions', icon:'<circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6.3 6.2a1.8 1.8 0 113 1.4c-.8.5-1.3.9-1.3 1.8" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="8" cy="11.6" r=".9" fill="currentColor"/>'},
+  {id:'pitch', n:'Pitch Ready', how:'Score 80+ on the live call', icon:'<path d="M3 9V7l8-4v10L3 9zM11 6h2v4h-2" fill="currentColor"/>'},
+  {id:'deal', n:'Deal Navigator', how:'Pass Deal Decisions with 80%+', icon:'<path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'}
+];
+
+const S = {
+  name:'', role:'smb', level:'newads', market:'na', started:false,
+  xp:0, badges:new Set(), station:0, visited:new Set([0]), done:new Set(),
+  flipped:new Set(), match:{},
+  picks:[], picksLocked:false, checked:new Set(),
+  rp:null, rpResult:null,
+  q:{i:0, answers:[], attempt:1}
+};
+const cur = () => MARKETS[S.market].c;
+const hintsOn = () => S.level !== 'seasoned';
+const who = () => S.name ? S.name : 'there';
+
+/* ---------- shell ---------- */
+function renderPath(){
+  $('#path').innerHTML = STATIONS.map((st,i)=>{
+    const cls = i===S.station ? 'cur' : (S.done.has(i) ? 'done' : '');
+    const mark = S.done.has(i) && i!==S.station ? '✓' : i+1;
+    return `<button type="button" class="step ${cls}" data-go="${i}" ${i===S.station?'aria-current="step"':''}><span class="num">${mark}</span><span class="lbl">${st.t}<span>${st.s}</span></span></button>`;
+  }).join('');
+  $$('#path [data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
+  $('#progress').style.width = (S.done.size/STATIONS.length*100)+'%';
+  $('#shelf').innerHTML = BADGES.map(b=>`<span class="badge-dot ${S.badges.has(b.id)?'on':''}" title="${b.n}${S.badges.has(b.id)?' (earned)':': '+b.how}"><svg viewBox="0 0 16 16" aria-hidden="true">${b.icon}</svg><span class="sr">${b.n} ${S.badges.has(b.id)?'earned':'not yet earned'}</span></span>`).join('');
+  $('#xp').textContent = S.xp;
+}
+function coach(msg){
+  $('#coachMsg').innerHTML = msg;
+  const m = S.started ? [
+    ['Role', ROLES[S.role].name],['Path', LEVELS[S.level].name],['Market', MARKETS[S.market].n],['Hints', hintsOn()?'On':'Off']
+  ] : [['Sprint length','About 20 minutes'],['Client','Mesa Verde Coffee'],['Goal','Book a follow-up meeting']];
+  $('#coachMeta').innerHTML = m.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('');
+}
+function addXP(n, why){
+  if(!n) return;
+  S.xp += n; $('#xp').textContent = S.xp;
+  toast(`⚡ +${n} XP · ${why}`);
+}
+function earn(id){
+  if(S.badges.has(id)) return;
+  S.badges.add(id);
+  const b = BADGES.find(x=>x.id===id);
+  renderPath();
+  setTimeout(()=>toast(`🏅 Badge unlocked: ${b.n}`), 900);
+  confetti();
+}
+let toastT;
+function toast(t){
+  const el = $('#toast'); el.textContent = t; el.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>el.classList.remove('show'), 2200);
+}
+function complete(i){ S.done.add(i); renderPath(); }
+function go(i){
+  S.station = i; renderPath();
+  if(i<0){ renderIntro(); } else [renderWelcome, renderPrimer, renderNavigator, renderCall, renderDecisions, renderResults][i]();
+  const st = $('#stage'); st.focus({preventScroll:true});
+  window.scrollTo({top:0, behavior: reduce?'auto':'smooth'});
+}
+function nextBtn(i, label){ return `<button class="btn" type="button" data-next="${i}">${label}</button>`; }
+function bindNext(){ $$('[data-next]').forEach(b=>b.onclick=()=>go(+b.dataset.next)); }
+
+/* ---------- intro slide ---------- */
+function renderIntro(){
+  $('#stage').innerHTML = `
+  <div class="intro">
+    <div class="intro-top">
+      <div>
+        <div class="kicker">Module overview · Sprint 1 of New Seller Onboarding</div>
+        <h1>Your First Client Call</h1>
+        <p class="lede">An AI-first onboarding sprint for new ad sellers. You'll learn the core products, plan your discovery, practice a live call with an AI client, and prove you can handle real objections, all before your first real client call.</p>
+        <div class="facts sec">
+          <div class="fact"><b>~20 min</b><span>Self-paced, one sitting</span></div>
+          <div class="fact"><b>5</b><span>Interactive stations</span></div>
+          <div class="fact"><b>80%</b><span>Score to pass</span></div>
+        </div>
+      </div>
+      <div class="why-box">
+        <h3>Why this module?</h3>
+        <p>New sellers often wait weeks before their first real client conversation, and their first try happens with a real client. This sprint lets you practice the whole call on day one, so you ramp faster and walk into your first call ready.</p>
+        <p><b>Who it's for:</b> new sellers, account managers and customer success reps in every market. Your path adapts to your role and experience.</p>
+      </div>
+    </div>
+    <div>
+      <h3>By the end, you'll be able to</h3>
+      <ul class="objs sec" style="margin-top:10px">
+        <li><i>1</i><span>Match a client's goal to the right ad product: Search, Display, Video or Autopilot.</span></li>
+        <li><i>2</i><span>Ask open discovery questions that uncover goal, audience, current marketing, budget and success measures.</span></li>
+        <li><i>3</i><span>Deliver a goal-based pitch and book a dated next step on a live call.</span></li>
+        <li><i>4</i><span>Handle budget, performance, competitor and AI questions, and log the call in your CRM.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>The Brightline Way: our 4-step selling method</h3>
+      <div class="method" style="margin-top:10px">
+        <div><b>1. Learn</b>Understand the client's business before you pitch.</div>
+        <div><b>2. Match</b>Connect one product to their goal.</div>
+        <div><b>3. Pitch</b>Sell the outcome in their words.</div>
+        <div><b>4. Commit</b>Close on a dated next step.</div>
+      </div>
+    </div>
+    <div class="two">
+      <div>
+        <h3>How it works</h3>
+        <div class="stations" style="margin-top:8px">
+          <div><i>1</i><span>Build your path</span><em>1 min</em></div>
+          <div><i>2</i><span>Product Primer: flip cards + Goal Match game</span><em>4 min</em></div>
+          <div><i>3</i><span>Discovery Navigator + Pitch Builder</span><em>5 min</em></div>
+          <div><i>4</i><span>Live call with Maya (AI client) + CRM log</span><em>6 min</em></div>
+          <div><i>5</i><span>Deal Decisions assessment</span><em>3 min</em></div>
+          <div><i>6</i><span>Results, personalized plan + feedback</span><em>1 min</em></div>
+        </div>
+      </div>
+      <div>
+        <h3>What you'll earn</h3>
+        <div class="badges" style="grid-template-columns:repeat(2,1fr)">${BADGES.map(b=>`<div class="bcard"><div class="medal"><svg width="22" height="22" viewBox="0 0 16 16" aria-hidden="true">${b.icon}</svg></div><b>${b.n}</b>${b.how}</div>`).join('')}</div>
+        <p class="note" style="margin-top:10px">Plus XP for every step, a call-readiness score and a learning plan you can share with your manager.</p>
+      </div>
+    </div>
+    <div class="row"><button class="btn" id="beginBtn" type="button">Begin: build my path →</button><span class="note">Keyboard and screen-reader friendly. No login needed.</span></div>
+  </div>`;
+  $('#beginBtn').onclick = () => go(0);
+  coach(`Welcome! I'm Nova, your AI coach. Take a minute to read what this sprint covers, then press <b>Begin</b>. I'll tailor every station to you.`);
+}
+
+/* ---------- 0 welcome ---------- */
+function renderWelcome(){
+  const st = $('#stage');
+  st.innerHTML = `
+  <div class="hero">
+    <div>
+      <div class="kicker">Station 1 · Build your path</div>
+      <h1>Your first client call is in 20 minutes. Let's get you ready.</h1>
+      <p class="lede">Welcome to Brightline Ads. In this sprint you'll learn four ad products, prep your discovery, practice the call with an AI client, and prove you can handle her toughest questions. Tell Nova a little about you and your path adapts.</p>
+    </div>
+    <div class="client-card">
+      <div class="avatar" aria-hidden="true">MO</div>
+      <div><h3>Your client: Maya Ortiz</h3><p>Owner, Mesa Verde Coffee Roasters. One café, one online store, zero ads so far. Her nephew told her to "try online ads." She has 15 minutes.</p></div>
+    </div>
+  </div>
+  <div class="sec form-grid">
+    <label class="field" for="nm">First name<input type="text" id="nm" autocomplete="given-name" placeholder="e.g., Jordan" value="${esc(S.name)}"></label>
+    <label class="field" for="mk">Your market<select id="mk">${Object.entries(MARKETS).map(([k,v])=>`<option value="${k}" ${k===S.market?'selected':''}>${v.n}</option>`).join('')}</select></label>
+  </div>
+  <div class="sec"><h3 id="roleH">Your role</h3><div class="choices" role="group" aria-labelledby="roleH">${Object.entries(ROLES).map(([k,v])=>`<button type="button" class="choice" data-role="${k}" aria-pressed="${k===S.role}"><b>${v.name}</b><span>${{smb:'New local and online businesses',am:'Growing advertisers with a plan',cs:'Keeping new advertisers successful'}[k]}</span></button>`).join('')}</div></div>
+  <div class="sec"><h3 id="lvlH">Your experience</h3><div class="choices" role="group" aria-labelledby="lvlH">${Object.entries(LEVELS).map(([k,v])=>`<button type="button" class="choice" data-level="${k}" aria-pressed="${k===S.level}"><b>${v.name}</b><span>${v.d}</span></button>`).join('')}</div></div>
+  <div class="sec"><h3>Your personalized path</h3><div class="plan" id="planPreview"></div></div>
+  <div class="sec row"><button class="btn" id="startBtn" type="button">Start my sprint</button><span class="note">Progress is saved for this session only.</span></div>`;
+  const preview = () => {
+    const p = [
+      ['Product Primer', S.level==='seasoned' ? 'Optional: test out with Goal Match' : '4 min · flip cards + Goal Match game'],
+      ['Discovery Navigator', '3 min · pick your questions + call checklist'],
+      ['Live Call with Maya', S.level==='newsales' ? '5 min · extra pitch and close coaching' : '5 min · AI role-play'],
+      ['Deal Decisions', `3 min · 5 decisions in ${cur()}`],
+      ['Results & Plan', `Next steps for a ${ROLES[S.role].short}`]
+    ];
+    $('#planPreview').innerHTML = p.map(([a,b])=>`<div><span>${a}</span><em>${b}</em></div>`).join('');
+  };
+  preview();
+  $$('[data-role]').forEach(b=>b.onclick=()=>{S.role=b.dataset.role; $$('[data-role]').forEach(x=>x.setAttribute('aria-pressed', x===b)); preview();});
+  $$('[data-level]').forEach(b=>b.onclick=()=>{S.level=b.dataset.level; $$('[data-level]').forEach(x=>x.setAttribute('aria-pressed', x===b)); preview();});
+  $('#mk').onchange = e => {S.market = e.target.value; preview();};
+  $('#nm').oninput = e => {S.name = e.target.value.trim().slice(0,30);};
+  $('#startBtn').onclick = () => {
+    const first = !S.started; S.started = true;
+    complete(0); if(first) addXP(20,'Path built');
+    go(1);
+  };
+  coach(`Hi! I'm Nova. I'll coach you through every station and tailor tips to your role. Pick your role and experience, then press <b>Start my sprint</b>.`);
+}
+
+/* ---------- 1 primer ---------- */
+const PRODUCTS = [
+  {k:'search', n:'Search Ads', color:'#2457F5', soft:'#E4EBFF', icon:'<circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+   tag:'Capture people already looking', best:'Clients who want calls, leads or orders from people actively searching.', how:'Ads appear when someone searches keywords tied to the client\'s products. Pay per click.', pitch:'"When someone searches for what you sell, you show up at that exact moment."'},
+  {k:'display', n:'Display Ads', color:'#0E9F75', soft:'#DDF5EC', icon:'<rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M8 21h8M7 13l3-3 3 3 2-2 2 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+   tag:'Stay visible and bring people back', best:'Awareness and remarketing to people who visited but didn\'t buy.', how:'Image ads across partner websites and apps, targeted by audience and interests.', pitch:'"Remind the people who almost bought from you to come back and finish."'},
+  {k:'video', n:'Video Ads', color:'#D93F47', soft:'#FDE4E5', icon:'<rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M10 9l5 3-5 3z" fill="currentColor"/>',
+   tag:'Tell the story at scale', best:'Launches and brand building where reach and storytelling matter.', how:'Short video ads shown before or during online videos. Pay per view.', pitch:'"Put your story in front of a million people who\'ve never heard of you."'},
+  {k:'auto', n:'Autopilot Campaigns', color:'#B07800', soft:'#FFF3D6', icon:'<path d="M12 3l2.2 5 5.3.5-4 3.6 1.2 5.3L12 14.6 7.3 17.4l1.2-5.3-4-3.6 5.3-.5z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>',
+   tag:'AI finds buyers across every channel', best:'Clients with a clear conversion goal and tracking set up who want reach with little setup.', how:'AI uses the client\'s goal, budget and conversion data to place ads across search, display and video.', pitch:'"Tell us your goal and budget; the AI finds buyers everywhere, and we review results together."'}
+];
+const GOALS = [
+  {g:'A plumber wants calls tonight from people searching "emergency plumber near me."', a:'search', why:'Urgent intent: they\'re already searching. Search Ads meet them at that moment.'},
+  {g:'A new sneaker brand wants a million people to see its launch story.', a:'video', why:'Reach and storytelling for a launch is what Video Ads do best.'},
+  {g:'An online bookstore wants shoppers who left items in their cart to come back.', a:'display', why:'That\'s remarketing: Display Ads follow up with past visitors across sites and apps.'},
+  {g:'A retailer with a small team wants sales across every channel with minimal setup. Conversion tracking is already in place.', a:'auto', why:'Clear goal plus tracking plus little time to manage: a strong fit for Autopilot.'},
+  {g:'A bakery wants to show up when locals search "birthday cake order."', a:'search', why:'Another high-intent search. The customer is ready to order now.'}
+];
+function renderPrimer(){
+  const st = $('#stage');
+  const seasoned = S.level==='seasoned';
+  st.innerHTML = `
+  <div class="kicker">Station 2 · Self-paced microlearning</div>
+  <h2>Four products. One question: what's the client's goal?</h2>
+  <p class="lede">Top sellers never lead with features. They match the product to the goal. Flip each card to learn when to use it and a one-line pitch you can borrow.${seasoned?' <b>Fast track:</b> already know these? Skip to Goal Match and test out.':''}</p>
+  <div class="fresh"><span class="pill good">v1.1 · Reviewed Nov 2026</span><span><b>What's new this quarter:</b> Autopilot Campaigns can now use a client's own customer list to find similar buyers. Mention it when a client has an email list but little time to manage ads.</span></div>
+  <div class="flips">${PRODUCTS.map(p=>`
+    <button type="button" class="flip" data-flip="${p.k}" aria-pressed="${S.flipped.has(p.k)}" aria-label="${p.n}. Press to flip.">
+      <div class="in">
+        <div class="face front"><div class="ico" style="background:${p.soft};color:${p.color}"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">${p.icon}</svg></div><div><h3>${p.n}</h3><p style="font-size:.88rem;margin-top:4px">${p.tag}</p></div><small>Tap to flip ↻</small></div>
+        <div class="face back"><b>Best for</b><p>${p.best}</p><b>How it works</b><p>${p.how}</p><b>Pitch it in one line</b><q>${p.pitch}</q></div>
+      </div>
+    </button>`).join('')}</div>
+  <div class="sec">
+    <h3>Goal Match: pick the best product for each client</h3>
+    <div class="match">${GOALS.map((g,i)=>`
+      <div class="goal" data-goal="${i}"><p>${i+1}. ${g.g}</p>
+        <div class="opts">${PRODUCTS.map(p=>`<button type="button" class="opt" data-pick="${p.k}">${p.n}</button>`).join('')}</div>
+        <div class="fb" aria-live="polite"></div>
+      </div>`).join('')}</div>
+    <div class="score-strip"><span class="pill info" id="matchScore"></span><span class="note" id="matchNote"></span></div>
+  </div>
+  <div class="sec row">${nextBtn(2,'Next: Discovery Navigator →')}</div>`;
+  $$('[data-flip]').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.flip, on=b.getAttribute('aria-pressed')!=='true';
+    b.setAttribute('aria-pressed', on);
+    if(on && !S.flipped.has(k)){ S.flipped.add(k); addXP(5,'Card explored');
+      if(S.flipped.size===4) coach(`Nice, ${esc(who())}. You've seen all four. Notice that each pitch line talks about the <b>client's outcome</b>, never the feature. Try Goal Match below.`);
+    }
+  });
+  $$('.goal').forEach(el=>{
+    const i=+el.dataset.goal, g=GOALS[i];
+    const paint = () => {
+      const r = S.match[i]; if(!r) return;
+      $$('.opt',el).forEach(o=>{o.disabled=true; if(o.dataset.pick===g.a) o.classList.add('right'); else if(o.dataset.pick===r) o.classList.add('wrong');});
+      $('.fb',el).innerHTML = (r===g.a?'<span class="pill good">Correct</span> ':'<span class="pill bad">Not quite</span> ')+g.why;
+    };
+    paint();
+    $$('.opt',el).forEach(o=>o.onclick=()=>{
+      S.match[i]=o.dataset.pick; paint();
+      if(o.dataset.pick===g.a) addXP(10,'Goal matched');
+      updateMatch();
+    });
+  });
+  updateMatch();
+  bindNext();
+  coach(seasoned
+    ? `Fast track is on. If you score 4 of 5 in Goal Match, you've tested out of this station.`
+    : `Flip all four cards first. Then try Goal Match. Hint: ask yourself, <i>"Is this person already searching, or do we need to find them?"</i>`);
+}
+function updateMatch(){
+  const n = Object.keys(S.match).length, right = Object.entries(S.match).filter(([i,a])=>GOALS[i].a===a).length;
+  $('#matchScore').textContent = `Goal Match: ${right}/${GOALS.length}`;
+  if(n===GOALS.length){
+    complete(1);
+    if(right>=4){ earn('product'); $('#matchNote').textContent = 'Product Pro badge unlocked.'; coach(`${right}/5! You think in goals, not features. That's exactly how you'll pitch Maya.`); }
+    else { $('#matchNote').textContent = 'Review the cards you missed, then keep going.'; coach(`${right}/5. Flip the cards for the ones you missed. I'll add a product refresher to your learning plan.`); }
+  }
+}
+
+/* ---------- 2 navigator ---------- */
+const QUESTIONS = [
+  {q:'What would a great month look like for your business?', s:true, why:'Open question about the goal. Lets Maya define success.'},
+  {q:'Do you want to buy Search Ads today?', s:false, why:'Closed and pushy. You haven\'t earned a pitch yet.'},
+  {q:'Who is your best customer, and how do they find you today?', s:true, why:'Uncovers audience and current marketing in one question.'},
+  {q:'Did you know Brightline has four ad products?', s:false, why:'That\'s a feature dump disguised as a question.'},
+  {q:'How will we know the ads are working for you?', s:true, why:'Agrees on a success measure up front, so results are easy to show later.'},
+  {q:'Is your budget at least 5,000 a month?', s:false, why:'Pressures the client and anchors too high for a small business.'}
+];
+const PHASES = [
+  {n:'Prep (before the call)', items:['Review the client\'s website and online store','Note 2 products that could fit their likely goal','Write your 3 opening discovery questions']},
+  {n:'Open', items:['Thank them and confirm how much time they have','Share the agenda: learn, recommend, agree on next step']},
+  {n:'Discover', items:['Goal: what does success look like?','Audience: who buys, and how do they find you?','Current marketing: what\'s working now?','Budget: what feels comfortable to start?','Measure: how will we know it\'s working?']},
+  {n:'Recommend', items:['Tie one product to their goal in their own words','Explain cost and what to expect in the first 30 days']},
+  {n:'Close', items:['Book a dated follow-up','Confirm who sends what, and when']},
+  {n:'Log it', items:['Update CRM notes with goal, budget and next step within 1 hour']}
+];
+function renderNavigator(){
+  const st = $('#stage');
+  st.innerHTML = `
+  <div class="kicker">Station 3 · Workflow aid</div>
+  <h2>Plan the call before you make it.</h2>
+  <p class="lede">Great discovery questions are open, about the client, and tied to a decision you'll make later. Pick the <b>three strongest</b> questions for Maya, then use the Discovery Navigator on every first call.</p>
+  <div class="sec two">
+    <div>
+      <h3>Pick your 3 opening questions</h3>
+      <div class="qpick">${QUESTIONS.map((q,i)=>`<button type="button" class="qbtn" data-q="${i}" aria-pressed="false">${esc(q.q)}<small class="why" hidden></small></button>`).join('')}</div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="lockQ" type="button" disabled>Check my picks</button><span class="pill info" id="qCount">0/3 picked</span></div>
+    </div>
+    <div class="aid">
+      <div class="aid-head"><b>Discovery Navigator</b><button class="ghost" id="copyAid" type="button">Copy checklist</button></div>
+      ${PHASES.map((p,pi)=>`<details class="phase" ${pi<3?'open':''}><summary>${p.n}<em data-cnt="${pi}"></em></summary><ul>${p.items.map((it,ii)=>`<li><label><input type="checkbox" data-c="${pi}-${ii}" ${S.checked.has(pi+'-'+ii)?'checked':''}>${esc(it)}</label></li>`).join('')}</ul></details>`).join('')}
+    </div>
+  </div>
+  <div class="sec">
+    <h3>Pitch Builder: practice the Brightline Way</h3>
+    <p class="lede">Warm-up with a different client. <b>Lakeside Bakery</b> wants 40 custom cake orders a month online (now about 15) and can spend ${cur()}800 a month. Build the strongest pitch, one part at a time. You'll use the same 4-part pattern with Maya.</p>
+    <div class="pslots" id="pslots"></div>
+    <div class="sec"><b>Your pitch</b><div class="pitch-out" id="pitchOut" aria-live="polite"><span class="note">Pick one line for each part to build your pitch.</span></div></div>
+  </div>
+  <div class="sec row">${nextBtn(3,'Next: call Maya →')}</div>`;
+  renderPitch();
+  const paintQ = () => {
+    $$('[data-q]').forEach(b=>{
+      const i=+b.dataset.q, picked=S.picks.includes(i);
+      b.setAttribute('aria-pressed', picked);
+      if(S.picksLocked){
+        b.disabled = true;
+        if(picked || QUESTIONS[i].s){ b.classList.add(QUESTIONS[i].s?'strong':'weak'); const w=$('.why',b); w.hidden=false; w.textContent=(QUESTIONS[i].s?'Strong: ':'Weak: ')+QUESTIONS[i].why; }
+      }
+    });
+    $('#qCount').textContent = S.picksLocked ? `${S.picks.filter(i=>QUESTIONS[i].s).length}/3 strong` : `${S.picks.length}/3 picked`;
+    $('#lockQ').disabled = S.picksLocked || S.picks.length!==3;
+  };
+  $$('[data-q]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.q;
+    if(S.picks.includes(i)) S.picks = S.picks.filter(x=>x!==i);
+    else if(S.picks.length<3) S.picks.push(i);
+    paintQ();
+  });
+  $('#lockQ').onclick = () => {
+    S.picksLocked = true; paintQ();
+    const strong = S.picks.filter(i=>QUESTIONS[i].s).length;
+    addXP(strong*10,'Discovery questions');
+    if(strong===3){ earn('questions'); coach(`All three strong. You're asking about <b>Maya's</b> business, not yours. Use these on the call.`); }
+    else coach(`${strong}/3 strong. The green ones are open and client-centered. Borrow them for your call with Maya.`);
+    maybeDoneNav();
+  };
+  const paintCnt = () => PHASES.forEach((p,pi)=>{ const n=p.items.filter((_,ii)=>S.checked.has(pi+'-'+ii)).length; $(`[data-cnt="${pi}"]`).textContent = `${n}/${p.items.length}`; });
+  $$('[data-c]').forEach(c=>c.onchange=()=>{
+    if(c.checked){ if(!S.checked.has(c.dataset.c)){ S.checked.add(c.dataset.c); addXP(2,'Checklist step'); } }
+    else S.checked.delete(c.dataset.c);
+    paintCnt(); maybeDoneNav();
+  });
+  $('#copyAid').onclick = async () => {
+    const text = 'DISCOVERY NAVIGATOR · First client call\n' + PHASES.map((p,pi)=>`\n${p.n.toUpperCase()}\n`+p.items.map((it,ii)=>`[${S.checked.has(pi+'-'+ii)?'x':' '}] ${it}`).join('\n')).join('\n');
+    try{ await navigator.clipboard.writeText(text); toast('Checklist copied. Paste it into your CRM notes.'); }
+    catch(e){ toast('Copy is blocked here. Select the checklist text instead.'); }
+  };
+  paintQ(); paintCnt(); bindNext();
+  coach(`This is the workflow aid you'd keep open on a real call. Check off the <b>Prep</b> steps now. On the call, I'll track which discovery areas you've covered.`);
+}
+function pitchParts(){
+  const c = cur();
+  return [
+    {slot:'Open with their goal', opts:[
+      {t:'"You told me you want 40 cake orders a month online, up from about 15."', ok:true, why:'Starts with her goal in her own words.'},
+      {t:'"Brightline is one of the biggest ad platforms in the world."', ok:false, why:'This is about you, not her.'},
+      {t:'"Lots of bakeries are running ads right now."', ok:false, why:'Generic. It doesn\'t show you listened.'}]},
+    {slot:'Match one product', opts:[
+      {t:'"Video Ads can tell your story to a huge audience."', ok:false, why:'Awareness, not orders. Wrong product for her goal.'},
+      {t:'"Search Ads put you in front of locals searching \'custom birthday cake\' right now."', ok:true, why:'High-intent searchers match an orders goal.'},
+      {t:'"We can turn on all four products at once."', ok:false, why:'Too much for a small budget. Focus wins.'}]},
+    {slot:'Set expectations', opts:[
+      {t:'"You\'ll double your sales in a week, guaranteed."', ok:false, why:'Overpromising breaks trust later.'},
+      {t:'"Results vary, so it\'s hard to say."', ok:false, why:'Too vague. Give her something to measure.'},
+      {t:`"We start at ${c}800 a month and review your orders together every week."`, ok:true, why:'Clear cost, clear measure, clear rhythm.'}]},
+    {slot:'Ask for the next step', opts:[
+      {t:'"Can we book 15 minutes Tuesday at 9 to finalize your keywords?"', ok:true, why:'Specific, dated and low pressure.'},
+      {t:'"Let me know if you\'re interested."', ok:false, why:'Puts all the work on the client. Deals stall here.'},
+      {t:'"Sign today and I\'ll find you a discount."', ok:false, why:'Pressure before she\'s seen a plan.'}]}
+  ];
+}
+function renderPitch(){
+  const P = pitchParts();
+  if(!S.pitch) S.pitch = {};
+  $('#pslots').innerHTML = P.map((p,i)=>`<div class="pslot" data-slot="${i}"><h4><i>${i+1}</i>${p.slot}</h4><div class="answers">${p.opts.map((o,j)=>`<button type="button" class="ans" data-po="${j}">${esc(o.t)}</button>`).join('')}</div><div class="fb" aria-live="polite"></div></div>`).join('');
+  const paint = () => {
+    P.forEach((p,i)=>{
+      const el = $(`[data-slot="${i}"]`), pick = S.pitch[i];
+      if(pick===undefined) return;
+      $$('[data-po]',el).forEach(b=>{ const o=p.opts[+b.dataset.po]; b.disabled = true; if(o.ok) b.classList.add('best'); else if(+b.dataset.po===pick) b.classList.add('no'); });
+      const o = p.opts[pick];
+      $('.fb',el).innerHTML = (o.ok?'<span class="pill good">Strong</span> ':'<span class="pill bad">Weak</span> ')+esc(o.why);
+    });
+    const built = P.map((p,i)=>S.pitch[i]===undefined?null:p.opts.find(o=>o.ok).t.replace(/^"|"$/g,''));
+    if(built.some(x=>x)) $('#pitchOut').textContent = built.filter(Boolean).join(' ');
+  };
+  $$('.pslot').forEach(el=>{
+    const i = +el.dataset.slot;
+    $$('[data-po]',el).forEach(b=>b.onclick=()=>{
+      S.pitch[i] = +b.dataset.po; paint();
+      if(P[i].opts[+b.dataset.po].ok) addXP(5,'Strong pitch line');
+      if(Object.keys(S.pitch).length===4){
+        const strong = Object.entries(S.pitch).filter(([k,v])=>P[k].opts[v].ok).length;
+        coach(`${strong}/4 strong picks. Notice the pattern: <b>their goal → one product → a clear expectation → a dated ask</b>. Use it with Maya.`);
+        maybeDoneNav();
+      }
+    });
+  });
+  paint();
+}
+function maybeDoneNav(){ if(S.picksLocked && [0,1,2].some(i=>S.checked.has('0-'+i))) complete(2); }
+
+/* ---------- 3 role play ---------- */
+const DISC = ['goal','audience','current','budget','measure'];
+const DISC_LBL = {goal:'Goal',audience:'Audience',current:'Current marketing',budget:'Budget',measure:'Success measure'};
+const INTENT = {
+  goal:/\b(goals?|objectives?|achiev\w*|success|hoping|hope|want(ing)? to|looking (for|to)|great month|grow\w*|trying to|main priority)\b/i,
+  audience:/\b(customers?|audience|buyers?|target\w*|who (buys|are)|people who|regulars|clients|demographic)\b/i,
+  current:/\b(currently|right now|today|tried|doing now|marketing|instagram|social|website|online store|advertis\w* before|working now)\b/i,
+  budget:/\b(budget|spend\w*|invest\w*|cost|afford|how much|price|money)\b/i,
+  measure:/\b(measure\w*|track\w*|results?|roi|know (if|it)|kpis?|working for you|conversions?|dashboard)\b/i,
+  rec:/\b(recommend\w*|suggest\w*|search ads?|display|video|autopilot|campaigns?|propos\w*|start with|keywords?)\b/i,
+  next:/\b(next steps?|follow[- ]?up|send you|recap|schedul\w*|book|meet again|monday|tuesday|wednesday|thursday|friday|call back|calendar|tomorrow)\b/i,
+  empathy:/\b(understand|makes sense|great question|thank(s| you)?|appreciate|sounds (good|great|like)|love that|got it|totally|i hear you|that's great|fair)\b/i
+};
+function mayaLines(){
+  const c = cur();
+  return {
+    goal:'Honestly? More online orders. Walk-ins are steady, but bean subscriptions are where my margin is. A great month would be 60 online orders. Right now it\'s about 20.',
+    audience:'My best customers are home brewers, maybe 28 to 45, who care where their beans come from. Most of them find us at the farmers market first.',
+    current:'We post on social media when we have time, which is never. The website has an online store, but I doubt anyone finds it unless they already know us.',
+    budget:`I could do about ${c}1,500 a month to start. If it works, I'd go higher. If it doesn't, I need to know fast.`,
+    measure:'If I see more orders in my store dashboard, I\'m happy. Can you actually tell which orders came from the ads?',
+    early:'Hold on. You\'re already selling me something, and you don\'t know anything about my shop yet.',
+    recSearch:'So people searching for fresh coffee beans online would find my store? That\'s exactly who I want. I like that it\'s tied to orders.',
+    recAuto:'So the AI looks for buyers everywhere based on my orders goal, and I set the budget? As long as I can see the results, I\'m interested.',
+    recWeak:'Getting seen sounds nice, but I need orders, not just eyeballs. Is that really the best place to start?',
+    recGeneric:'Okay, a plan sounds good. What would you start with, specifically?',
+    next:'That works. Send me the recap and let\'s look at the plan together. Thanks for actually listening to me.',
+    nextVague:'Sure... when, though? I\'m terrible at follow-up unless it\'s on my calendar.',
+    nextEarly:'Before we book anything, what would you actually suggest for my shop?',
+    repeat:'Like I said, that part I already told you. What else do you need to know?',
+    huh:'Sorry, I\'m not sure what you mean. What do you need to know about my shop?',
+    small:'Mm-hm. Go on.'
+  };
+}
+const CHIP = {
+  goal:'What would a great month look like for Mesa Verde?',
+  audience:'Who\'s your best customer, and how do they find you today?',
+  current:'What are you doing for marketing right now?',
+  budget:'What monthly budget feels comfortable to start?',
+  measure:'How will you know the ads are working for you?',
+  rec:'Based on that, I\'d start with Search Ads on your top beans so people searching for fresh coffee find your store.',
+  next:'Can we book 20 minutes Thursday at 10 to review a plan? I\'ll send you a recap today.',
+  empathy:'That makes sense. Thanks for sharing that.'
+};
+function newRP(){ return {log:[], covered:new Set(), empathy:0, fit:null, early:false, next:false, turns:0, over:false, showChips:hintsOn()}; }
+function rpScore(r){
+  const d = r.covered.size*8, l = Math.min(r.empathy,2)*7.5;
+  const f = {search:25, auto:25, generic:12, weak:8}[r.fit] || 0;
+  const n = r.next ? 20 : 0;
+  return {d, l, f:Math.max(0, f-(r.early?10:0)), n, total:Math.round(Math.max(0, d+l+f+n-(r.early?10:0)))};
+}
+function renderCall(){
+  if(!S.rp){ S.rp = newRP(); S.rp.log.push({who:'sys', t:'Call connected · Maya Ortiz, Mesa Verde Coffee Roasters'}); S.rp.log.push({who:'them', t:`Hi${S.name?', '+S.name:''}! I've got about 15 minutes. My nephew keeps telling me to try online ads, so... where do we start?`}); }
+  const st = $('#stage');
+  st.innerHTML = `
+  <div class="kicker">Station 4 · Interactive role-play with an AI client</div>
+  <h2>Live call: Maya, Mesa Verde Coffee Roasters</h2>
+  <p class="lede">Type what you'd say, just like a real call. Maya reacts to <b>your words</b>: she shares details when you ask good questions and pushes back if you pitch too soon. Goal: understand her business, recommend one product, and book a dated next step.</p>
+  <div class="rp">
+    <div class="call">
+      <div class="call-head"><div class="avatar" aria-hidden="true">MO</div><div><b>Maya Ortiz</b><span>Owner · Mesa Verde Coffee Roasters</span></div><div class="live"><i></i><span id="turns"></span></div></div>
+      <div class="log" id="log" aria-live="polite"></div>
+      <div class="chips" id="chips"></div>
+      <form class="compose" id="compose"><label class="sr" for="say">Your message to Maya</label><input type="text" id="say" autocomplete="off" placeholder="Ask Maya a question..." maxlength="280"><button class="btn" type="submit">Send</button></form>
+    </div>
+    <div class="meters" id="meters"></div>
+  </div>
+  <div class="row sec"><button class="btn alt" id="endCall" type="button">End call & get coaching</button><button class="btn alt" id="toggleChips" type="button"></button><button class="btn alt" id="restart" type="button">Restart call</button></div>
+  <div id="debriefBox"></div>
+  <div class="sec row">${nextBtn(4,'Next: Deal Decisions →')}</div>`;
+  paintCall();
+  $('#compose').onsubmit = e => { e.preventDefault(); const v=$('#say').value.trim(); if(v){ $('#say').value=''; say(v); } };
+  $('#endCall').onclick = endCall;
+  $('#restart').onclick = () => { S.rp=null; S.rpResult=null; renderCall(); };
+  $('#toggleChips').onclick = () => { S.rp.showChips=!S.rp.showChips; paintCall(); };
+  if(S.rpResult) showDebrief();
+  bindNext();
+  coach(S.level==='newsales'
+    ? `New to sales? Here's the rhythm: <b>ask, listen, then recommend</b>. Cover at least three discovery areas before you mention a product. Use the suggested lines below if you get stuck.`
+    : S.level==='seasoned'
+    ? `Hints are off for you. Maya responds to what you type, so run the call like a real one. Watch the live rubric on the right.`
+    : `Start with an open question about her goal. Tap a suggestion or type your own. The rubric on the right updates as you go.`);
+}
+function paintCall(){
+  const r = S.rp, log = $('#log');
+  log.innerHTML = r.log.map(m=>`<div class="msg ${m.who}">${esc(m.t)}</div>`).join('');
+  log.scrollTop = log.scrollHeight;
+  $('#turns').textContent = r.over ? 'Call ended' : `LIVE · turn ${r.turns}/10`;
+  // chips
+  let ideas = [];
+  if(!r.over && r.showChips){
+    const open = DISC.filter(k=>!r.covered.has(k));
+    ideas = open.slice(0,2);
+    if(r.covered.size>=3 && !r.fit) ideas.unshift('rec');
+    if(r.fit && !r.next) ideas = ['next'];
+    if(r.turns>0 && r.empathy<2 && ideas.length<3) ideas.push('empathy');
+  }
+  $('#chips').innerHTML = ideas.map(k=>`<button type="button" class="chip" data-chip="${k}">${esc(CHIP[k])}</button>`).join('');
+  $$('[data-chip]').forEach(b=>b.onclick=()=>say(CHIP[b.dataset.chip]));
+  $('#toggleChips').textContent = r.showChips ? 'Hide suggested lines' : 'Show suggested lines';
+  $('#say').disabled = r.over; $('#compose button').disabled = r.over; $('#endCall').disabled = r.over;
+  // meters
+  const s = rpScore(r);
+  const meter = (n,v,max,extra='') => `<div class="meter"><b>${n}<em>${Math.round(v)}/${max}</em></b><div class="track"><i style="width:${v/max*100}%"></i></div>${extra}</div>`;
+  $('#meters').innerHTML = `
+    <h3>Live rubric <span class="pill info">${s.total}/100</span></h3>
+    ${meter('Discovery', s.d, 40, `<div class="checks">${DISC.map(k=>`<span class="${r.covered.has(k)?'ok':''}">${r.covered.has(k)?'✓':'○'} ${DISC_LBL[k]}</span>`).join('')}</div>`)}
+    ${meter('Listening', s.l, 15, '<div class="checks"><span>Acknowledge what Maya says</span></div>')}
+    ${meter('Product fit', s.f, 25, `<div class="checks"><span>${r.early?'⚠ Pitched before discovery':(r.fit?'Recommendation made':'Recommend after 3+ discovery areas')}</span></div>`)}
+    ${meter('Next step', s.n, 20, '<div class="checks"><span>Book a dated follow-up</span></div>')}`;
+}
+function say(text){
+  const r = S.rp; if(r.over) return;
+  r.log.push({who:'me', t:text}); r.turns++;
+  const L = mayaLines(), replies = [];
+  const has = k => INTENT[k].test(text);
+  if(has('empathy') && r.turns>1) r.empathy++;
+  const wantsRec = has('rec');
+  const discHits = DISC.filter(k=>has(k));
+  if(wantsRec && r.covered.size<3 && !discHits.length){
+    r.early = true; replies.push(L.early);
+  } else if(discHits.some(k=>!r.covered.has(k))){
+    const fresh = discHits.filter(k=>!r.covered.has(k));
+    fresh.forEach(k=>r.covered.add(k));
+    fresh.slice(0,2).forEach(k=>replies.push(L[k]));
+  } else if(wantsRec){
+    const t = text.toLowerCase();
+    let fit = 'generic';
+    if(/search/.test(t)) fit='search'; else if(/autopilot/.test(t)) fit='auto'; else if(/display|video/.test(t)) fit='weak';
+    if(!r.fit || ({search:3,auto:3,generic:1,weak:0}[fit] > ({search:3,auto:3,generic:1,weak:0}[r.fit]))) r.fit = fit;
+    replies.push({search:L.recSearch, auto:L.recAuto, weak:L.recWeak, generic:L.recGeneric}[fit]);
+    if(has('next') && r.fit && r.fit!=='weak' && /\b(monday|tuesday|wednesday|thursday|friday|tomorrow|\d)/i.test(text)){ r.next=true; replies.push(L.next); }
+  } else if(has('next')){
+    if(!r.fit) replies.push(L.nextEarly);
+    else if(/\b(monday|tuesday|wednesday|thursday|friday|tomorrow|\d)/i.test(text)){ r.next = true; replies.push(L.next); }
+    else replies.push(L.nextVague);
+  } else if(discHits.length){
+    replies.push(L.repeat);
+  } else if(has('empathy')){
+    replies.push(L.small);
+  } else replies.push(L.huh);
+  paintCall();
+  const log = $('#log');
+  const typing = document.createElement('div'); typing.className='msg them'; typing.textContent='Maya is typing…'; log.appendChild(typing); log.scrollTop=log.scrollHeight;
+  $('#say').disabled = true;
+  setTimeout(()=>{
+    r.log.push({who:'them', t:replies.join(' ')});
+    if(r.next){ r.log.push({who:'sys', t:'Next step booked ✓'}); }
+    paintCall(); $('#say').disabled = r.over; if(!r.over) $('#say').focus();
+    liveCoach();
+    if(r.next || r.turns>=10) setTimeout(endCall, 700);
+  }, reduce?50:650);
+}
+function liveCoach(){
+  const r = S.rp;
+  if(r.early) return coach(`Maya pushed back because you pitched before you understood her business. Ask about her <b>goal</b> or <b>customers</b> to recover.`);
+  if(r.covered.size<3) return coach(`Good. You've covered ${r.covered.size} of 5 discovery areas. Still open: ${DISC.filter(k=>!r.covered.has(k)).map(k=>DISC_LBL[k]).join(', ')}.`);
+  if(!r.fit) return coach(`You know enough to recommend. Her goal is <b>online orders</b> from people who already love good coffee. Which product reaches people who are already searching?`);
+  if(r.fit==='weak') return coach(`Maya wants orders, not awareness. Try again and tie your recommendation to people already searching, or to her orders goal.`);
+  if(!r.next) return coach(`Great recommendation. Now close: propose a <b>specific day and time</b> for a follow-up and offer to send a recap.`);
+}
+function endCall(){
+  const r = S.rp; if(r.over) return;
+  r.over = true; r.log.push({who:'sys', t:'Call ended'});
+  const s = rpScore(r); S.rpResult = s;
+  paintCall(); showDebrief();
+  complete(3);
+  addXP(Math.round(s.total/2), 'Live call');
+  if(s.total>=80) earn('pitch');
+  coach(s.total>=80 ? `${s.total}/100. Maya booked a follow-up. That's the call your manager wants to hear.` : `${s.total}/100. Read my debrief, then restart the call when you're ready. Practice here is free; real calls aren't.`);
+}
+const CRMF = () => [
+  {k:'goal', l:'Client goal', o:['More social media followers','60 online orders a month (now about 20)','Brand awareness in her city'], ok:[1]},
+  {k:'budget', l:'Monthly budget', o:[cur()+'500',cur()+'1,500',cur()+'5,000'], ok:[1]},
+  {k:'prod', l:'Recommended product', o:['Search Ads','Autopilot Campaigns','Video Ads','Display Ads'], ok:[0,1]},
+  {k:'next', l:'Next step', o:['Email her sometime','Plan review booked for a specific day','None yet'], ok:[1]}
+];
+let CRM = [];
+function showDebrief(){
+  CRM = CRMF();
+  const r = S.rp, s = S.rpResult;
+  const good = [], next = [];
+  if(r.covered.size>=4) good.push(`Thorough discovery: you uncovered ${r.covered.size} of 5 areas before deciding what to pitch.`);
+  else next.push(`Cover more discovery. You missed: ${DISC.filter(k=>!r.covered.has(k)).map(k=>DISC_LBL[k].toLowerCase()).join(', ')}. Try: "${CHIP[DISC.find(k=>!r.covered.has(k))]}"`);
+  if(r.empathy>=2) good.push('You acknowledged Maya\'s answers, which builds trust fast.');
+  else next.push('Acknowledge her answers ("That makes sense…") before your next question. Busy owners notice when they\'re heard.');
+  if(r.fit==='search'||r.fit==='auto') good.push(`Your recommendation tied a product to her goal of online orders${r.covered.has('budget')?` within her ${cur()}1,500 budget`:''}.`);
+  else if(r.fit) next.push('Tie the product to her goal. She wants online orders, so lead with Search Ads or Autopilot, not awareness.');
+  else next.push('Make one clear recommendation once you\'ve done discovery.');
+  if(r.early) next.push('You pitched before asking about her business. Earn the pitch with at least three discovery questions.');
+  if(r.next) good.push('You closed with a dated next step, so the deal keeps moving.');
+  else next.push('Close with a specific day and time, plus a recap email.');
+  $('#debriefBox').innerHTML = `<div class="debrief"><div class="row"><h3>Nova's debrief</h3><span class="pill ${s.total>=80?'good':s.total>=60?'warn':'bad'}">${s.total}/100</span></div>
+    ${good.length?`<div><b>What worked</b><ul>${good.slice(0,2).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}
+    ${next.length?`<div><b>Try next time</b><ul>${next.slice(0,1).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}</div>
+    <div class="crm">
+      <div class="aid-head"><b>Log the call in your CRM</b><span class="pill info">Client-facing workflow</span></div>
+      <p class="crm-res" style="padding-top:12px">Sellers log every call within an hour so the next person on the account has the facts. Fill in what Maya told you.</p>
+      <div class="crm-body">
+        ${CRM.map(f=>`<label class="field" for="crm-${f.k}">${f.l}<select id="crm-${f.k}"><option value="">Choose…</option>${f.o.map((o,i)=>`<option value="${i}">${esc(o)}</option>`).join('')}</select></label>`).join('')}
+      </div>
+      <div class="crm-res"><button class="btn" id="saveCrm" type="button">Save to CRM</button> <span id="crmOut" aria-live="polite"></span></div>
+    </div>`;
+  CRM.forEach(f=>{ if(S.crm && S.crm[f.k]!==undefined) $('#crm-'+f.k).value = S.crm[f.k]; });
+  $('#saveCrm').onclick = () => {
+    const vals = {}; let ok = 0, filled = 0;
+    CRM.forEach(f=>{ const v = $('#crm-'+f.k).value; if(v!==''){ filled++; vals[f.k]=+v; if(f.ok.includes(+v)) ok++; } });
+    if(filled<CRM.length){ $('#crmOut').innerHTML = '<span class="pill warn">Fill in all four fields</span>'; return; }
+    const first = !S.crm; S.crm = vals; S.crmScore = ok;
+    $('#crmOut').innerHTML = ok===4 ? '<span class="pill good">Saved · 4/4 accurate</span>' : `<span class="pill warn">Saved · ${ok}/4 accurate</span> Check the call transcript and correct the rest.`;
+    if(first) addXP(ok*5,'CRM notes logged');
+    coach(ok===4 ? 'Accurate CRM notes. Your manager and the next teammate on this account will thank you.' : 'Close. Scroll up through the call transcript to check what Maya actually said, then save again.');
+  };
+}
+
+/* ---------- 4 decisions ---------- */
+function scenes(){
+  const c = cur();
+  return [
+    {say:`"I can really only spend ${c}500 a month. Is that even worth it?"`, ctx:'Budget objection',
+     a:[{t:`"Honestly, most results start around ${c}5,000."`, p:0, r:'Maya hears "you\'re too small for us" and ends the call. You lost a client who could grow.'},
+        {t:`"Let's start focused: Search Ads on your top three bean blends, then put more behind what works."`, p:10, r:'Maya relaxes. A focused start fits her budget and makes results easy to see.'},
+        {t:`"Sure, we'll split it across all four products."`, p:3, r:`${c}500 spread four ways means no channel gets enough data to work. Results will look weak.`}]},
+    {say:'"It\'s been two weeks. Lots of clicks, but hardly any orders."', ctx:'Performance concern',
+     a:[{t:'"Let\'s double the budget to get more clicks."', p:2, r:'More clicks with the same problem means she spends more for the same weak result.'},
+        {t:'"Let\'s check that order tracking is working and look at the landing page, then tighten the keywords."', p:10, r:'You find the ads send people to the homepage, not the store. One fix and orders climb.'},
+        {t:'"Ads take time. Let\'s pause and try again next quarter."', p:0, r:'Pausing loses the data you just paid for, and Maya loses confidence.'}]},
+    {say:'"My competitor is running video ads. Shouldn\'t we do that too?"', ctx:'Competitor pressure',
+     a:[{t:'"Yes, let\'s match them right away."', p:2, r:'You reacted to the competitor, not to Maya\'s goal. Video won\'t drive orders this month.'},
+        {t:'"Video ads don\'t really work for coffee."', p:0, r:'That isn\'t true, and Maya can tell. Credibility drops.'},
+        {t:'"Let\'s tie it to your goal. Search is driving orders now. Once that\'s steady, video can grow awareness for your subscriptions."', p:10, r:'Maya hears a plan with an order to it. She trusts your judgment more.'}]},
+    {say:'"What\'s this Autopilot thing? Does the AI just spend my money?"', ctx:'AI product question',
+     a:[{t:'"It uses your orders goal and data to find buyers across channels. You set the budget and targets, and we review results together every week."', p:10, r:'Clear, honest and in her terms. Maya agrees to test Autopilot next month.'},
+        {t:'"Don\'t worry about how it works. It just does."', p:0, r:'Maya worries more. Business owners want control over their money.'},
+        {t:'"It\'s basically magic. It always beats everything else."', p:2, r:'Overpromising sets you up for a hard conversation later.'}]},
+    {say:'"Okay, this sounds good. So what happens now?"', ctx:'Closing the call',
+     a:[{t:'"I\'ll email you sometime this week."', p:2, r:'Vague follow-ups get lost. A week later, Maya has moved on.'},
+        {t:'"Can you sign today so we can launch?"', p:3, r:'Too fast. She hasn\'t seen a plan yet and feels pushed.'},
+        {t:'"I\'ll send a recap today. Can we book 20 minutes Thursday at 10 to review the plan together?"', p:10, r:'Dated, specific and low pressure. Maya adds it to her calendar.'}]}
+  ];
+}
+function renderDecisions(){
+  const st = $('#stage'), sc = scenes(), q = S.q;
+  if(q.i>=sc.length) return renderDecisionSummary();
+  const scn = sc[q.i], ans = q.answers[q.i];
+  st.innerHTML = `
+  <div class="kicker">Station 5 · Scenario-based assessment</div>
+  <h2>Deal Decisions</h2>
+  <p class="lede">It's a month later and Maya is a client. Each decision has a consequence, just like the real thing. Score 80% or higher to pass.</p>
+  <div class="scene">
+    <div class="row" style="justify-content:space-between"><span class="pill warn">${scn.ctx}</span><div class="dots" aria-label="Decision ${q.i+1} of ${sc.length}">${sc.map((_,i)=>`<i class="${i<=q.i?'on':''}"></i>`).join('')}</div></div>
+    <div class="say"><div class="avatar" aria-hidden="true">MO</div><div class="bubble">${esc(scn.say)}</div></div>
+    <div class="answers">${scn.a.map((a,i)=>`<button type="button" class="ans" data-a="${i}">${esc(a.t)}</button>`).join('')}</div>
+    <div id="conseq" aria-live="polite"></div>
+  </div>
+  <div class="row sec"><button class="btn" id="nextQ" type="button" ${ans===undefined?'disabled':''}>${q.i===sc.length-1?'See my score':'Next decision →'}</button><span class="note">Decision ${q.i+1} of ${sc.length}</span></div>`;
+  const paint = () => {
+    const a = q.answers[q.i]; if(a===undefined) return;
+    $$('[data-a]').forEach(b=>{ const o=scn.a[+b.dataset.a]; b.disabled=true; if(o.p===10) b.classList.add('best'); else if(+b.dataset.a===a) b.classList.add(o.p>0?'meh':'no'); });
+    const o = scn.a[a];
+    $('#conseq').innerHTML = `<div class="conseq"><span class="pill ${o.p===10?'good':o.p>0?'warn':'bad'}">${o.p===10?'Best move':o.p>0?'Partly works':'Costly'}</span> ${esc(o.r)}</div>`;
+    $('#nextQ').disabled = false;
+  };
+  paint();
+  $$('[data-a]').forEach(b=>b.onclick=()=>{
+    q.answers[q.i] = +b.dataset.a; paint();
+    const p = scn.a[+b.dataset.a].p; if(p) addXP(p, p===10?'Best move':'Decision');
+    coach(p===10 ? `Strong move. Notice how it ties back to Maya's goal of online orders.` : `Look at the green answer. The best responses stay focused on her goal and keep her in control.`);
+  });
+  $('#nextQ').onclick = () => { q.i++; renderDecisions(); };
+  coach(`Read Maya's words carefully. The best answer usually ties back to her goal, her budget and a clear next step.`);
+}
+function decisionScore(){ const sc=scenes(); return S.q.answers.reduce((t,a,i)=>t+(a===undefined?0:sc[i].a[a].p),0); }
+function renderDecisionSummary(){
+  const pts = decisionScore(), pct = pts*2, pass = pct>=80;
+  complete(4);
+  if(pass) earn('deal');
+  $('#stage').innerHTML = `
+  <div class="kicker">Station 5 · Scenario-based assessment</div>
+  <h2>${pass?'Passed. Maya renewed for another quarter.':'Not yet. Maya is still on the fence.'}</h2>
+  <div class="tiles"><div class="tile"><b>${pct}%</b><span>Decision score</span></div><div class="tile"><b>${S.q.answers.filter((a,i)=>scenes()[i].a[a].p===10).length}/5</b><span>Best moves</span></div><div class="tile"><b>80%</b><span>Pass mark</span></div><div class="tile"><b>${S.q.attempt}</b><span>Attempt</span></div></div>
+  <p class="lede sec">${pass?'You handled budget, performance, competitor and AI questions the way a strong seller would.':'Review the green answers. Each one connects back to Maya\'s goal and keeps her in control. Try again when you\'re ready.'}</p>
+  <div class="row sec">${pass?'':'<button class="btn alt" id="retryQ" type="button">Try again</button>'}${nextBtn(5,'See my results →')}</div>`;
+  if(!pass) $('#retryQ').onclick = () => { S.q = {i:0, answers:[], attempt:S.q.attempt+1}; renderDecisions(); };
+  bindNext();
+  coach(pass ? `${pct}%! You earned the Deal Navigator badge. Head to your results for your personalized plan.` : `${pct}%. You need 80% to pass. A second attempt is part of the design: practice here so the real call goes right.`);
+}
+
+/* ---------- 5 results ---------- */
+function renderResults(){
+  const right = Object.entries(S.match).filter(([i,a])=>GOALS[i].a===a).length;
+  const prod = Object.keys(S.match).length ? Math.round(right/GOALS.length*100) : null;
+  const strong = S.picks.filter(i=>QUESTIONS[i].s).length;
+  const rp = S.rpResult, r = S.rp;
+  const disc = (S.picksLocked || rp) ? Math.round(((S.picksLocked?strong/3:0)*0.4 + (r?r.covered.size/5:0)*0.6)*100) : null;
+  const pitch = rp ? Math.round((rp.f+rp.n+rp.l)/60*100) : null;
+  const judge = S.q.i>=5 ? decisionScore()*2 : null;
+  const skills = [['Product knowledge',prod,'product'],['Discovery',disc,'disc'],['Pitch & close',pitch,'pitch'],['Client judgment',judge,'judge']];
+  const scored = skills.filter(s=>s[1]!==null);
+  const ready = scored.length ? Math.round(scored.reduce((t,s)=>t+s[1],0)/scored.length) : 0;
+  const weakest = scored.length ? scored.slice().sort((a,b)=>a[1]-b[1])[0] : null;
+  const fixes = {
+    product:['Product refresher','Replay the four product cards and retake Goal Match. 5 min.'],
+    disc:['Discovery drills','Run the live call again and cover all five discovery areas before pitching. 5 min.'],
+    pitch:['Pitch and close lab','Practice tying one product to the client\'s goal, then booking a dated follow-up. 10 min.'],
+    judge:['Objection handling','Retake Deal Decisions and explain to your manager why each green answer works. 5 min.']
+  };
+  const roleNext = {
+    smb:[['Prospecting small businesses','Build a list of 30 local businesses and write a first-touch message for each type.'],['Selling on small budgets','How to start focused, prove results, then scale.']],
+    am:[['Account planning','Turn discovery notes into a 90-day growth plan for an existing advertiser.'],['Quarterly business reviews','Present results in the client\'s terms and agree on next-quarter goals.']],
+    cs:[['First 30 days with a new advertiser','Check tracking, set expectations and schedule the first results review.'],['Spotting growth signals','Read performance data to find when a client is ready to expand.']]
+  }[S.role];
+  const plan = [];
+  if(weakest && weakest[1]<85) plan.push(['Focus', ...fixes[weakest[2]]]);
+  plan.push(['Shadow','Listen to two real first calls with a senior seller','Use the Discovery Navigator to score each call, then compare notes.']);
+  plan.push(['Peer practice','Run the Maya call with a teammate','Swap roles: one plays the client, one sells. Share your strongest discovery question in your cohort channel.']);
+  roleNext.forEach(x=>plan.push(['Next module', ...x]));
+  const ready90 = ready>=80;
+  complete(5);
+  $('#stage').innerHTML = `
+  <div class="kicker">Station 6 · Results & personalized plan</div>
+  <h2>${S.name?esc(S.name)+', h':'H'}ere's your ramp snapshot.</h2>
+  <p class="lede">${ready90?'You\'re ready for your first real client call. Share this with your manager to book your first shadow session.':'You\'re building fast. Your plan below targets the one skill that will make the biggest difference before your first real call.'}</p>
+  <div class="tiles">
+    <div class="tile"><b>${ready}%</b><span>Call readiness</span></div>
+    <div class="tile"><b>${S.xp}</b><span>XP earned</span></div>
+    <div class="tile"><b>${S.badges.size}/4</b><span>Badges</span></div>
+    <div class="tile"><b>${S.done.size}/6</b><span>Stations done</span></div>
+  </div>
+  <div class="sec two">
+    <div><h3>Skill profile</h3><div class="skills">${skills.map(([n,v])=>`<div class="skill"><b>${n}<em>${v===null?'Not started':v+'%'}</em></b><div class="track"><i style="width:${v||0}%;background:${v===null?'var(--line)':v>=80?'var(--mint)':v>=60?'var(--sun)':'var(--coral)'}"></i></div></div>`).join('')}</div></div>
+    <div><h3>Your plan as a ${ROLES[S.role].short}</h3><ul class="planlist">${plan.map(([tag,t,d])=>`<li><span class="pill ${tag==='Focus'?'warn':'info'} tag">${tag}</span><div><b>${esc(t)}</b><span class="note">${esc(d)}</span></div></li>`).join('')}</ul></div>
+  </div>
+  <div class="sec"><h3>Your ramp milestones</h3><div class="miles">
+    <div class="mile ok"><b>Day 1 ✓</b>Complete Sprint 1: Your First Client Call</div>
+    <div class="mile"><b>Day 3</b>Shadow two real first calls</div>
+    <div class="mile"><b>Day 7</b>Run your first real discovery call</div>
+    <div class="mile"><b>Day 30</b>Close your first deal</div>
+  </div></div>
+  <div class="sec"><h3>Badges</h3><div class="badges">${BADGES.map(b=>`<div class="bcard ${S.badges.has(b.id)?'on':''}"><div class="medal"><svg width="22" height="22" viewBox="0 0 16 16" aria-hidden="true">${b.icon}</svg></div><b>${b.n}</b>${S.badges.has(b.id)?'Earned':b.how}</div>`).join('')}</div></div>
+  <div class="sec pulse">
+    <h3>Quick feedback: how was this sprint?</h3>
+    <div class="stars" role="group" aria-label="Rate this sprint">${[1,2,3,4,5].map(n=>`<button type="button" class="star ${S.rating>=n?'on':''}" data-star="${n}" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}</div>
+    <div><b style="font-size:.9rem">What slowed you down?</b><div class="row" style="margin-top:6px">${['Nothing, it flowed','The role-play was confusing','Too long','I wanted more product detail','Hints were too obvious'].map(t=>`<button type="button" class="tagchip" data-fb="${esc(t)}" aria-pressed="${(S.fb||[]).includes(t)}">${esc(t)}</button>`).join('')}</div></div>
+    <p class="note" id="fbOut">The curriculum team reviews feedback weekly to find friction points and update the sprint.</p>
+  </div>
+  <div class="sec row"><button class="btn" id="share" type="button">Copy summary for my manager</button><button class="btn alt" id="openDesign2" type="button">See behind the design</button></div>`;
+  $('#share').onclick = async () => {
+    const text = `Brightline Seller Academy · Sprint 1 results\nSeller: ${S.name||'New seller'} (${ROLES[S.role].name}, ${MARKETS[S.market].n})\nCall readiness: ${ready}%\n`+skills.map(([n,v])=>`- ${n}: ${v===null?'not started':v+'%'}`).join('\n')+`\nBadges: ${[...S.badges].map(id=>BADGES.find(b=>b.id===id).n).join(', ')||'none yet'}\nNext focus: ${plan[0][1]}`;
+    try{ await navigator.clipboard.writeText(text); toast('Summary copied. Paste it into a message to your manager.'); }
+    catch(e){ toast('Copy is blocked here.'); }
+  };
+  $('#openDesign2').onclick = openDesign;
+  $$('[data-star]').forEach(b=>b.onclick=()=>{ const first=!S.rating; S.rating=+b.dataset.star; $$('[data-star]').forEach(x=>x.classList.toggle('on', +x.dataset.star<=S.rating)); $('#fbOut').textContent='Thanks! Your rating helps the team improve the next version.'; if(first) addXP(5,'Feedback shared'); });
+  $$('[data-fb]').forEach(b=>b.onclick=()=>{ S.fb = S.fb||[]; const t=b.dataset.fb; S.fb = S.fb.includes(t)?S.fb.filter(x=>x!==t):[...S.fb,t]; b.setAttribute('aria-pressed', S.fb.includes(t)); $('#fbOut').textContent='Thanks! Friction points like this go straight into the next content review.'; });
+  coach(weakest && weakest[1]>=85 ? `Every skill is at 85% or higher. Your plan moves you straight to shadowing real calls and your next ${ROLES[S.role].short} modules.` : weakest ? `Your plan starts with <b>${weakest[0].toLowerCase()}</b> because it's your lowest score right now. Everything else builds toward your first real call.` : `Complete a few stations and I'll build your plan from your results.`);
+}
+
+/* ---------- overlay, confetti ---------- */
+function openDesign(){ $('#design').classList.add('open'); $('#closeDesign').focus(); }
+$('#openDesign').onclick = openDesign;
+$('#closeDesign').onclick = () => { $('#design').classList.remove('open'); $('#openDesign').focus(); };
+$('#design').onclick = e => { if(e.target.id==='design') $('#closeDesign').click(); };
+document.addEventListener('keydown', e => { if(e.key==='Escape' && $('#design').classList.contains('open')) $('#closeDesign').click(); });
+
+function confetti(){
+  if(reduce) return;
+  const cv = $('#fx'), ctx = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight;
+  const cols = ['#2457F5','#FFB020','#0E9F75','#D93F47'];
+  const ps = Array.from({length:120},()=>({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*12,vy:Math.random()*-10-3,s:Math.random()*6+4,c:cols[Math.random()*4|0],r:Math.random()*6}));
+  let f=0;
+  (function tick(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.1;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);ctx.restore();});
+    if(++f<110) requestAnimationFrame(tick); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+S.station = -1; renderPath(); renderIntro();
+$('#openIntro').onclick = () => go(-1);
+})();
+</script>
+</body>
+</html>
